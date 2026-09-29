@@ -36,3 +36,19 @@ jobs:
           echo "Build timestamp:"
           date
           echo "Application build completed successfully"
+
+      - name: Send Slack Notification
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            MESSAGE="DevOps CI/CD Pipeline SUCCESS - Build and tests passed."
+          else
+            MESSAGE="DevOps CI/CD Pipeline FAILED - Please check GitHub Actions logs."
+          fi
+
+          curl -X POST \
+            -H "Content-type: application/json" \
+            --data "{\"text\":\"$MESSAGE\"}" \
+            "$SLACK_WEBHOOK_URL"

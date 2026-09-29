@@ -1,0 +1,38 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Build Application
+        run: |
+          echo "Starting build process..."
+          test -f index.html
+          echo "index.html found"
+          echo "Build completed successfully"
+
+      - name: Test Application
+        run: |
+          echo "Running tests..."
+          grep -q "<html" index.html
+          grep -q "</html>" index.html
+          echo "Tests passed successfully"
+
+      - name: Generate Build Logs
+        run: |
+          echo "Build timestamp:"
+          date
+          echo "Application build completed successfully"
